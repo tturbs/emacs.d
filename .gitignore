@@ -1,0 +1,24 @@
+# Package install directory
+elpa/
+
+# Native compilation cache
+eln-cache/
+
+# Tree-sitter compiled grammars
+tree-sitter/
+
+# Session/state files
+auto-save-list/
+history
+places
+recentf
+projectile-bookmarks.eld
+transient/
+
+# Byte-compiled files
+*.elc
+
+# Backup files
+*~
+\#*\#
+.\#*
