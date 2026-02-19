@@ -167,10 +167,16 @@
         (gomod      "https://github.com/camdencheek/tree-sitter-go-mod"
                     "v1.1.0")
         (python     "https://github.com/tree-sitter/tree-sitter-python"
-                    "v0.23.6")))
+                    "v0.23.6")
+        (c          "https://github.com/tree-sitter/tree-sitter-c"
+                    "v0.23.4")
+        (cpp        "https://github.com/tree-sitter/tree-sitter-cpp"
+                    "v0.23.4")
+        (cmake      "https://github.com/uyha/tree-sitter-cmake"
+                    "v0.5.0")))
 
 ;; Auto-install missing grammars
-(dolist (lang '(typescript tsx go gomod python))
+(dolist (lang '(typescript tsx go gomod python c cpp cmake))
   (unless (treesit-language-available-p lang)
     (treesit-install-language-grammar lang)))
 
@@ -178,7 +184,10 @@
 (setq major-mode-remap-alist
       '((typescript-mode . typescript-ts-mode)
         (python-mode     . python-ts-mode)
-        (go-mode         . go-ts-mode)))
+        (go-mode         . go-ts-mode)
+        (c-mode          . c-ts-mode)
+        (c++-mode        . c++-ts-mode)
+        (cmake-mode      . cmake-ts-mode)))
 
 ;;; LSP (eglot is built-in since Emacs 29)
 (use-package eglot
@@ -186,9 +195,14 @@
   :hook ((typescript-ts-mode . eglot-ensure)
          (tsx-ts-mode        . eglot-ensure)
          (go-ts-mode         . eglot-ensure)
-         (python-ts-mode     . eglot-ensure))
+         (python-ts-mode     . eglot-ensure)
+         (c-ts-mode          . eglot-ensure)
+         (c++-ts-mode        . eglot-ensure)
+         (cmake-ts-mode      . eglot-ensure))
   :config
-  (setq eglot-autoshutdown t))
+  (setq eglot-autoshutdown t)
+  (add-to-list 'eglot-server-programs
+               '(cmake-ts-mode . ("cmake-language-server"))))
 
 ;;; TypeScript (using built-in typescript-ts-mode with tree-sitter)
 (add-to-list 'auto-mode-alist '("\\.ts\\'"  . typescript-ts-mode))
@@ -214,6 +228,18 @@
     (eglot-format-buffer)
     (eglot-code-actions nil nil "source.organizeImports" t)))
 (add-hook 'before-save-hook #'my/go-before-save)
+
+;;; C/C++
+(add-to-list 'auto-mode-alist '("\\.c\\'"   . c-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.h\\'"   . c-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.cpp\\'" . c++-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.cc\\'"  . c++-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.cxx\\'" . c++-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.hpp\\'" . c++-ts-mode))
+
+;;; CMake
+(add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.cmake\\'"          . cmake-ts-mode))
 
 ;;; Python
 (use-package python
