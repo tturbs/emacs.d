@@ -122,18 +122,7 @@
 
 ;;; Syntax Checking
 (use-package flycheck
-  :init (global-flycheck-mode)
-  :config
-  ;; 내장 tslint 체커를 typescript-ts-mode에서도 동작하게 확장
-  (flycheck-add-mode 'typescript-tslint 'typescript-ts-mode)
-  ;; 프로젝트 로컬 tslint 자동 탐색
-  (defun my/flycheck-set-local-tslint ()
-    "Set flycheck tslint executable to project-local node_modules."
-    (when-let* ((root (locate-dominating-file default-directory "tslint.json"))
-                (bin (expand-file-name "node_modules/.bin/tslint" root))
-                (_ (file-executable-p bin)))
-      (setq-local flycheck-typescript-tslint-executable bin)))
-  (add-hook 'typescript-ts-mode-hook #'my/flycheck-set-local-tslint))
+  :init (global-flycheck-mode))
 
 ;; eglot 진단을 flycheck로 통합
 (use-package flycheck-eglot
@@ -156,15 +145,14 @@
   :bind-keymap ("C-c p" . projectile-command-map))
 
 ;;; Tree-sitter grammars (Emacs 29+)
-;; Emacs 29.3 uses tree-sitter ABI 14; pin grammars to compatible versions
-;; Go grammar must use commit before method_spec -> method_elem rename
+;; Pin grammars to specific versions for reproducibility
 (setq treesit-language-source-alist
       '((typescript "https://github.com/tree-sitter/tree-sitter-typescript"
                     "v0.23.2" "typescript/src")
         (tsx        "https://github.com/tree-sitter/tree-sitter-typescript"
                     "v0.23.2" "tsx/src")
         (go         "https://github.com/tree-sitter/tree-sitter-go"
-                    "b82ab803d887002a0af11f6ce63d72884580bf33")
+                    "v0.23.4")
         (gomod      "https://github.com/camdencheek/tree-sitter-go-mod"
                     "v1.1.0")
         (python     "https://github.com/tree-sitter/tree-sitter-python"
