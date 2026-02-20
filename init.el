@@ -37,6 +37,7 @@
 (set-face-attribute 'default nil :height 100)
 (electric-pair-mode 1)
 (global-hl-line-mode 1)
+(setq hl-line-sticky-flag nil)
 (setq display-line-numbers-type 'relative)
 
 ;; Scrolling
@@ -68,7 +69,7 @@
 ;;; Theme
 (use-package doom-themes
   :config
-  (load-theme 'doom-one t)
+  (load-theme 'doom-dark+ t)
   (doom-themes-org-config))
 
 ;;; Modeline

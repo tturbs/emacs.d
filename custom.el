@@ -3,6 +3,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(doom-dark+))
+ '(custom-safe-themes
+   '("38b43b865e2be4fe80a53d945218318d0075c5e01ddf102e9bec6e90d57e2134" "aec7b55f2a13307a55517fdf08438863d694550565dee23181d2ebd973ebd6b8" "d481904809c509641a1a1f1b1eb80b94c58c210145effc2631c1a7f2e4a2fdf4" default))
  '(package-selected-packages
    '(dap-mode edit-indirect markdown-mode claude-code-ide yasnippet-snippets which-key web-mode vterm vertico treemacs rainbow-delimiters projectile orderless multiple-cursors marginalia magit flycheck-eglot exec-path-from-shell editorconfig eat doom-themes doom-modeline diff-hl consult company))
  '(package-vc-selected-packages
