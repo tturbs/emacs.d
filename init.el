@@ -273,9 +273,37 @@
   :custom
   (vterm-max-scrollback 10000)
   (vterm-term-environment-variable "xterm-256color")
-  (vterm-enable-input-method t)
   :config
-  (add-to-list 'vterm-keymap-exceptions "C-\\"))
+  ;; C-\ 는 vterm-mode-map에서 하드코딩되어 있어 keymap-exceptions로는 해제 불가
+  (define-key vterm-mode-map (kbd "C-\\") nil)
+
+  ;; hangul2-input-method는 buffer-read-only 버퍼에서 동작하지 않고,
+  ;; 조합 결과를 버퍼에 직접 insert하므로 vterm과 호환되지 않음.
+  ;; 임시 버퍼에서 한글 조합 후 vterm-send-string으로 전송.
+  ;; ThinkPad (Linux) 전용 — macOS는 OS 입력기가 동작하므로 불필요.
+  (when (string= (system-name) "yg-ThinkPad-X1-Carbon-Gen-13")
+    (defun my/vterm-self-insert-hangul (orig-fn)
+      "임시 버퍼에서 한글을 조합한 뒤 vterm에 전송한다."
+      (let ((key (event-basic-type last-command-event))
+            (im-fn input-method-function))
+        (if (and im-fn
+                 (memq im-fn '(hangul2-input-method
+                                hangul3-input-method
+                                hangul390-input-method))
+                 (fboundp 'hangul-alphabetp)
+                 (hangul-alphabetp key))
+            (let (result)
+              (with-temp-buffer
+                (add-hook 'after-change-functions
+                          (lambda (&rest _) (message "[한글] %s" (buffer-string)))
+                          nil t)
+                (funcall im-fn key)
+                (setq result (buffer-string)))
+              (message nil)
+              (when (not (string-empty-p result))
+                (vterm-send-string result)))
+          (funcall orig-fn))))
+    (advice-add 'vterm--self-insert :around #'my/vterm-self-insert-hangul)))
 
 ;;; Claude Code IDE (MCP 기반 통합)
 (unless (package-installed-p 'claude-code-ide)
