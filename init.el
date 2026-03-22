@@ -34,8 +34,10 @@
 (global-display-line-numbers-mode 1)
 (column-number-mode 1)
 (show-paren-mode 1)
-(set-face-attribute 'default nil :height
-                    (if (string= (system-name) "AL01975047-62.local") 200 100))
+(set-face-attribute 'default nil
+                    :family "Ubuntu Mono"
+                    :height (if (string= (system-name) "AL01975047-62.local") 200 120))
+(set-fontset-font t 'hangul (font-spec :family "Noto Sans Mono CJK KR"))
 (electric-pair-mode 1)
 (global-hl-line-mode 1)
 (setq hl-line-sticky-flag nil)
