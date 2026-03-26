@@ -36,7 +36,10 @@
 (show-paren-mode 1)
 (set-face-attribute 'default nil
                     :family "Ubuntu Mono"
-                    :height (if (string= (system-name) "AL01975047-62.local") 200 120))
+                    :height (pcase (system-name)
+                              ("AL01975047-62.local" 200)
+                              ("yg-ThinkPad-X1-Carbon-Gen-13" 200)
+                              (_ 120)))
 (set-fontset-font t 'hangul (font-spec :family "Noto Sans Mono CJK KR"))
 (electric-pair-mode 1)
 (global-hl-line-mode 1)
